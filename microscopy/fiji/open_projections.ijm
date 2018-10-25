@@ -36,17 +36,25 @@ function auto_contrast() {
 	 //run("Apply LUT"); 
 }
 
+nb_chans = 3
 lis = getList("image.titles");
 lis = Array.sort(lis);
 images_begining=nImages;
-for (i=0;i<images_begining;i+=3){
+for (i=0;i<images_begining;i+=nb_chans){
 	a = lis[i];
 	selectImage(a);
 	b = lis[i+1];
 	selectImage(b);
-	c = lis[i+2];
-	selectImage(c);
-	run("Concatenate...", "title="+a+" open image1="+a+" image2="+b+" image3="+c);
+	if (nb_chans==3)
+	{
+		c = lis[i+2];
+		selectImage(c);
+		run("Concatenate...", "title="+a+" open image1="+a+" image2="+b+" image3="+c);
+	}
+	else
+	{
+		run("Concatenate...", "title="+a+" open image1="+a+" image2="+b );
+	}
 	run("Re-order Hyperstack ...", "channels=[Channels (c)] slices=[Frames (t)] frames=[Slices (z)]");
 	run("Re-order Hyperstack ...", "channels=[Slices (z)] slices=[Channels (c)] frames=[Frames (t)]");
 	Stack.setDisplayMode("grayscale");
@@ -62,8 +70,11 @@ for (i=0; i<nImages;i++)
 	auto_contrast();
 	Stack.setChannel(2);
 	auto_contrast();
-	Stack.setChannel(3);
-	auto_contrast();
+	if (nb_chans==3)
+	{
+		Stack.setChannel(3);
+		auto_contrast();
+		}
 }
 
 

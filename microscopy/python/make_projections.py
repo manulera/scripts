@@ -11,9 +11,12 @@ import numpy as np
 from tifffile import imsave,imread
 
 
-def get_microsc_files(path):
+def get_microsc_files(path,nd_name=""):
     all_files = os.listdir(path)
-    pat = re.compile(".*_w(\d)(\d).*_s(\d*)_t(\d*)\.TIF")
+    if nd_name:
+        pat = re.compile(nd_name[:-3]+"_w(\d)(\d).*_s(\d*)_t(\d*)\.TIF")
+    else:
+        pat = re.compile(".*_w(\d)(\d).*_s(\d*)_t(\d*)\.TIF")
 
     # The groups are: 0 all, 1 the current wavelength, 2 the total number of wavelength, 3 the stage position, 4 the time
     microsc_files = list()
@@ -42,9 +45,9 @@ def get_names_from_nd(path):
     # Open the file
     with open(os.path.join(path,all_nd[0])) as ins:
         for l in ins:
-            ls = l.split()
+            ls = l.split(',')
             if len(ls) and '"Stage' in ls[0]:
-                out.append(eval(ls[1]))
+                out.append(eval(ls[1].strip()))
     return out,all_nd[0]
 
 
@@ -65,7 +68,12 @@ def process(microsc_info,microsc_files,path=".",type_proj="max",names=[],nd_name
                 log3 = np.equal(microsc_info[:, 2], t)
                 log = np.logical_and(log1, log2)
                 log = np.logical_and(log, log3)
-                f = microsc_files[int(np.where(log)[0])]
+                # If frame not found, copy the previous one
+                if np.sum(log):
+                    f = microsc_files[int(np.where(log)[0])]
+                else:
+                    # A bit sloppy but will work for most cases
+                    f = f
 
                 stack = imread(os.path.join(path,f))
                 if len(stack.shape)==2:
@@ -89,7 +97,7 @@ def process(microsc_info,microsc_files,path=".",type_proj="max",names=[],nd_name
                 else:
                     extra = "stage_" + str(stage)
                 out = np.array(out, dtype='uint16')
-                imsave(os.path.join(path,"projections",nd_name+extra + "_wave_" + str(wl) +"_"+ type_proj +".tiff"), out)
+                imsave(os.path.join(path,"projections",nd_name+"_"+extra + "_wave_" + str(wl) +"_"+ type_proj +".tiff"), out)
 
 def main(args):
     paths = []
@@ -106,7 +114,10 @@ def main(args):
 
     for p in paths:
 
-        microsc_info, microsc_files = get_microsc_files(p)
+        # Get the names of the positions and the name of the nd file
+        names, nd_name = get_names_from_nd(p)
+
+        microsc_info, microsc_files = get_microsc_files(p,nd_name)
         if not len(microsc_info):
             print "Nothing found in " + p
             continue
@@ -115,8 +126,7 @@ def main(args):
         if not os.path.isdir(dir):
             os.mkdir(dir)
 
-        # Get the names of the positions
-        names,nd_name = get_names_from_nd(p)
+
 
         # Ask for type of projection:
         proj = raw_input("What kind of projection do you want to make? (max,mean,median,sum):\n")
