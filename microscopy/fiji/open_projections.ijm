@@ -36,7 +36,7 @@ function auto_contrast() {
 	 //run("Apply LUT"); 
 }
 
-nb_chans = 3
+nb_chans = 2
 lis = getList("image.titles");
 lis = Array.sort(lis);
 images_begining=nImages;
@@ -74,7 +74,7 @@ for (i=0; i<nImages;i++)
 	{
 		Stack.setChannel(3);
 		auto_contrast();
-		}
+	}
 }
 
 
