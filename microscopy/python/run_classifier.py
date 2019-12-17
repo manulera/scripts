@@ -8,7 +8,7 @@ In mac it returns an error, but performs the task regardless
 import sys, os, subprocess
 
 fiji_bin="/Applications/Fiji.app/Contents/MacOS/ImageJ-macosx"
-fiji_script="/Users/Manu/scripts/microscopy/fiji/get_drift.ijm"
+fiji_script="/Users/Manu/scripts/microscopy/fiji/run_classifier.ijm"
 
 
 def process(p):

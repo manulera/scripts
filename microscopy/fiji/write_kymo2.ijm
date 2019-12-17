@@ -25,24 +25,25 @@ if (!File.isDirectory(dir))
 
 roiManager("Add");
 roiManager("Select", 0);
-roiManager("Save", dir+"/"+name+".roi");
+//roiManager("Save", dir+"/"+name+".roi");
 
-run("Duplicate...", "duplicate");
-run("Restore Selection");
-run("Line to Area");
+
+
+
 run("Crop");
+exit();
 setBackgroundColor(0, 0, 0);
 run("Clear Outside", "stack");
 run("Grays");
 run("Enhance Contrast", "saturated=0.35");
-saveAs("Tiff", dir+"/"+name+"_mini.tif");
+//saveAs("Tiff", dir+"/"+name+"_mini.tif");
 
 selectWindow(ima);
 run("KymographBuilder", "input=[ima]");
-run("Duplicate...", "duplicate");
+run("Duplicate...", "duplicate channels=2");
 run("Grays");
 run("Enhance Contrast", "saturated=0.35");
-saveAs("Tiff", dir+"/"+name+".tif");
+//saveAs("Tiff", dir+"/"+name+".tif");
 
 selectWindow(ima);
 roiManager("Deselect");

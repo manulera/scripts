@@ -14,11 +14,11 @@ from tifffile import imsave,imread
 def get_microsc_files(path,nd_name=""):
     all_files = os.listdir(path)
     if nd_name:
-        pat = re.compile(nd_name[:-3]+"_w(\d)(\d).*_s(\d*)_t(\d*)\.TIF")
+        pat = re.compile(nd_name[:-3]+"_w(\d)(\d)(.*?)(_s(\d*))?_t(\d*)\.TIF")
     else:
-        pat = re.compile(".*_w(\d)(\d).*_s(\d*)_t(\d*)\.TIF")
-
-    # The groups are: 0 all, 1 the current wavelength, 2 the total number of wavelength, 3 the stage position, 4 the time
+        pat = re.compile(".*_w(\d)(\d)(.*?)(_s(\d*))?_t(\d*)\.TIF")
+    print nd_name[:-3]+"_w(\d)(\d).*(_s(\d*))?_t(\d*)\.TIF"
+    # The groups are: 0 all, 1 the current wavelength, 2 the total number of wavelength, 5 the stage position, 6 the time
     microsc_files = list()
     microsc_info = list()
 
@@ -26,7 +26,10 @@ def get_microsc_files(path,nd_name=""):
         m = pat.match(f)
         if m is not None:
             microsc_files.append(f)
-            microsc_info.append([m.group(1), m.group(3), m.group(4)])
+            stage =m.group(5)
+            if stage is None:
+                stage=1
+            microsc_info.append([m.group(1), stage, m.group(6)])
 
     microsc_info = np.array(microsc_info, int)
     return microsc_info,microsc_files
@@ -53,7 +56,7 @@ def get_names_from_nd(path):
 
 
 
-def process(microsc_info,microsc_files,path=".",type_proj="max",names=[],nd_name=""):
+def make_projection(microsc_info,microsc_files,path=".",type_proj="max",names=[],nd_name=""):
 
     size = np.max(microsc_info, 0)
     for stage in range(1,size[1]+1):
@@ -97,9 +100,37 @@ def process(microsc_info,microsc_files,path=".",type_proj="max",names=[],nd_name
                 else:
                     extra = "stage_" + str(stage)
                 out = np.array(out, dtype='uint16')
-                imsave(os.path.join(path,"projections",nd_name+"_"+extra + "_wave_" + str(wl) +"_"+ type_proj +".tiff"), out)
 
-def main(args):
+                imsave(os.path.join(path,"projections",extra + "_wave_" + str(wl) +"_"+ type_proj +".tif"), out)
+
+
+
+                continue
+                out_text = os.path.join(path, "projections", extra + "_wave_" + str(wl) + "_" + type_proj + ".csv")
+                with open(out_text,"w") as out_file:
+                    out_file.write("Max,Mean\n")
+                    for o in out:
+                        out_file.write(str(np.max(o))+","+str(np.mean(o))+"\n")
+
+def process(p,proj):
+
+    # Get the names of the positions and the name of the nd file
+    names, nd_name = get_names_from_nd(p)
+
+    microsc_info, microsc_files = get_microsc_files(p, nd_name)
+    if not len(microsc_info):
+        print "Nothing found in " + p
+        return
+
+    dir = os.path.join(p, "projections")
+    if not os.path.isdir(dir):
+        os.mkdir(dir)
+
+    make_projection(microsc_info, microsc_files, p, type_proj=proj, names=names, nd_name=nd_name[:-3])
+
+
+
+def main(args,proj=""):
     paths = []
     for arg in args:
         if os.path.isdir(arg):
@@ -112,29 +143,16 @@ def main(args):
         sys.stderr.write("  Error: you must specify directories\n")
         sys.exit()
 
-    for p in paths:
-
-        # Get the names of the positions and the name of the nd file
-        names, nd_name = get_names_from_nd(p)
-
-        microsc_info, microsc_files = get_microsc_files(p,nd_name)
-        if not len(microsc_info):
-            print "Nothing found in " + p
-            continue
-
-        dir = os.path.join(p,"projections")
-        if not os.path.isdir(dir):
-            os.mkdir(dir)
-
-
-
-        # Ask for type of projection:
+    # Ask for type of projection:
+    if not proj:
         proj = raw_input("What kind of projection do you want to make? (max,mean,median,sum):\n")
-        if proj not in ["max","mean","median","sum"]:
+        if proj not in ["max", "mean", "median", "sum"]:
             print proj + " is not a valid projection name"
             exit()
 
-        process(microsc_info, microsc_files,p,type_proj=proj,names=names,nd_name=nd_name[:-3])
+    for p in paths:
+        process(p,proj)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
