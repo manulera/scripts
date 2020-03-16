@@ -1,19 +1,34 @@
 // Close all windows
 
-arg = getArgument();
-// Verify that it is an tif file
-if (!endsWith(arg,'.tif'))
+
+
+args = split(getArgument(),",");
+
+class_path = args[0];
+file_path=args[1];
+
+// Verify that second argument is a tif file
+if (!endsWith(class_path,'.model'))
 {
-	exit("Argument should be a .tif file");
+	exit("1st argument should be a .model file");
 }
-print(arg);
-file_path=arg;
+
+// Verify that second argument is a tif file
+if (!endsWith(file_path,'.tif'))
+{
+	exit("2nd argument should be a .tif file");
+}
+
+print(class_path);
+print(file_path);
+
+
 //class_path="/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/EnvyAtb2/classifier_EnvyAtb2_LP20.model";
 //class_path="/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/pnmt1GFPmal3_mitosis/classifier_mal3_simple.model";
 //class_path="/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/cls1_3GFPmch_Atb2/classifier_mchAtb2.model";
-class_path="/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/cls1_3GFPmch_Atb2/classifier_cls1_3GFP.model";
+//class_path="/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/cls1_3GFPmch_Atb2/classifier_cls1_3GFP.model";
 // For Ana
- //class_path = "/Users/Manu/Documents/data_microscope/training/mcherryAtb2ME.model";
+// class_path = "/Users/Manu/Documents/data_microscope/training/mcherryAtb2ME.model";
 // class_path = "/Users/Manu/Documents/data_microscope/training/GFPAtb2ME.model";
 
 // Set the name of the new file and get the output path

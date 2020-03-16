@@ -17,48 +17,53 @@ import sys, os, subprocess
 from make_projections import main as make_projections
 from run_classifier import main as run_classifier
 from get_drift import main as get_drift
+from pre_processing_settings import *
+
+def classify_files(classifier,extension,projections_dir):
+
+    classifier_arguments = [classifier]
+
+    for file in os.listdir(projections_dir):
+        # Ana: You specify here the channel used for segmentation (spindle)
+        if file.endswith(extension):
+            classifier_arguments.append(os.path.join(projections_dir, file))
+
+    run_classifier(classifier_arguments)
+
+
+
+
 
 def process(arg):
 
     path = os.path.dirname(os.path.realpath(arg))
 
-    if os.path.isdir(os.path.join(path,"extra")):
-        print "  Skipped, because it already has an extra directory"
-        return
-
-    file_name = os.path.basename(arg)
+    # if os.path.isdir(os.path.join(path,"extra")):
+    #     print "  Skipped, because it already has an extra directory"
+    #     return
 
     make_projections([path],'max')
 
     projections_dir = os.path.join(path,'projections')
 
-    files_4classifier = list()
-    
-    
-    
-    for file in os.listdir(projections_dir):
-        # Ana: You specify here the channel used for segmentation (spindle)
-        if file.endswith("wave_2_max.tif"):
-            files_4classifier.append(os.path.join(projections_dir, file))
 
-    run_classifier(files_4classifier)
 
-    # Delete the projections, no longer needed
-    # for f in files_4classifier:
-    #     os.remove(f)
+    classify_files(classifier_1,extension_classifier1,projections_dir)
+    if classify_second:
+        classify_files(classifier_2, extension_classifier2, projections_dir)
+
+
+    # Get the drift
 
     files_4drift = list()
 
     for file in os.listdir(projections_dir):
         # Ana: You specify here the channel used for drift
-        if file.endswith("wave_2_max.tif"):
+        if file.endswith(extension_drift):
             files_4drift.append(os.path.join(projections_dir, file))
 
     get_drift(files_4drift)
 
-    # Delete the projections, no longer needed
-    # for f in files_4drift:
-    #     os.remove(f)
 
     # Re-sort the files
 
