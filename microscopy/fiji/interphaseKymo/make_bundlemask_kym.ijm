@@ -28,3 +28,4 @@ run("Create Mask");
 run("Invert");
 
 saveAs("Tiff", dir+File.separator+"bundle_mask.tif");
+close();

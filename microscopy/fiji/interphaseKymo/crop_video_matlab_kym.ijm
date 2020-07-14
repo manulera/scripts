@@ -45,3 +45,4 @@ selectWindow("movie.tif");
 run("Z Project...", "projection=[Max Intensity]");
 selectWindow("MAX_movie.tif");
 saveAs("Tiff", dir+File.separator+"movie_projection.tif");
+run("Enhance Contrast", "saturated=0.35");
