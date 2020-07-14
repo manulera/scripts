@@ -15,9 +15,8 @@ function kymo_name(dir)
 }
 
 ima = getTitle();
-dir = File.directory()+"kymos_matlab"+File.separator;
-
-
+dir = getMetadata("original_path")+"kymos_matlab"+File.separator;
+//dir = File.directory+"kymos_matlab"+File.separator;
 if (!File.isDirectory(dir))
 {
 	File.makeDirectory(dir);

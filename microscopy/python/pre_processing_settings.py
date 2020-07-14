@@ -7,12 +7,12 @@ extension_classifier1 = "wave_2_max.tif"
 
 # Path of the classifier file
 # classifier_1 = "/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/cls1_3GFPmch_Atb2/classifier_cls1_3GFP.model"
-
-classifier_1 = "/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/pnmt1GFPmal3_mitosis/classifier_mal3_strong.model"
-
+# classifier_1 = "/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/cls1_3GFPmch_Atb2/classifier_mchAtb2.model"
+# classifier_1 = "/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/pnmt1GFPmal3_mitosis/classifier_mal3_strong.model"
+classifier_1 = "/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/GFPAse1mchAtb2/classifier_GFPase1.model"
 # Clasify a second channel (change to True/False if you want to use it / not use it)
 
-classify_second = False
+classify_second = True
 extension_classifier2 = "wave_3_max.tif"
 classifier_2 = "/Users/Manu/Documents/data_microscope/spinning3/allsettings27C/cls1_3GFPmch_Atb2/classifier_mchAtb2.model"
 
