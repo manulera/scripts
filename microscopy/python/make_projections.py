@@ -9,7 +9,7 @@ import re
 import os
 import numpy as np
 from tifffile import imsave,imread
-
+from joblib import Parallel, delayed
 
 def get_microsc_files(path,nd_name=""):
     all_files = os.listdir(path)
@@ -56,61 +56,61 @@ def get_names_from_nd(path):
 
 
 
-def make_projection(microsc_info,microsc_files,path=".",type_proj="max",names=[],nd_name=""):
+def make_projection(stage,microsc_info,microsc_files,path=".",type_proj="max",names=[],nd_name=""):
 
     size = np.max(microsc_info, 0)
-    for stage in range(1,size[1]+1):
-        log1 = np.equal(microsc_info[:, 1], stage)
-        for wl in range(1, size[0]+1):
-            print "Doing position", stage,", channel ",wl
-            log2 = np.equal(microsc_info[:, 0], wl)
-            out = list()
-            save_stack=True
-            for t in range(1, size[2] + 1):
 
-                log3 = np.equal(microsc_info[:, 2], t)
-                log = np.logical_and(log1, log2)
-                log = np.logical_and(log, log3)
-                # If frame not found, copy the previous one
-                if np.sum(log):
-                    f = microsc_files[int(np.where(log)[0])]
-                else:
-                    # A bit sloppy but will work for most cases
-                    f = f
+    log1 = np.equal(microsc_info[:, 1], stage)
+    for wl in range(1, size[0]+1):
+        # print "Doing position", stage,", channel ",wl
+        log2 = np.equal(microsc_info[:, 0], wl)
+        out = list()
+        save_stack=True
+        for t in range(1, size[2] + 1):
 
-                stack = imread(os.path.join(path,f))
-                if len(stack.shape)==2:
-                    # save_stack=False
-                    # break
-                    out.append(stack)
-                    continue
+            log3 = np.equal(microsc_info[:, 2], t)
+            log = np.logical_and(log1, log2)
+            log = np.logical_and(log, log3)
+            # If frame not found, copy the previous one
+            if np.sum(log):
+                f = microsc_files[int(np.where(log)[0])]
+            else:
+                # A bit sloppy but will work for most cases
+                f = f
 
-                if type_proj == "max":
-                    out.append(np.max(stack, axis=0))
-                elif type_proj == "mean":
-                    out.append(np.mean(stack, axis=0))
-                elif type_proj == "median":
-                    out.append(np.median(stack, axis=0))
-                elif type_proj == "sum":
-                    out.append(np.sum(stack, axis=0) / stack.shape[0])
-
-            if save_stack:
-                if len(names):
-                    extra = names[stage-1]
-                else:
-                    extra = "stage_" + str(stage)
-                out = np.array(out, dtype='uint16')
-
-                imsave(os.path.join(path,"projections",extra + "_wave_" + str(wl) +"_"+ type_proj +".tif"), out)
-
-
-
+            stack = imread(os.path.join(path,f))
+            if len(stack.shape)==2:
+                # save_stack=False
+                # break
+                out.append(stack)
                 continue
-                out_text = os.path.join(path, "projections", extra + "_wave_" + str(wl) + "_" + type_proj + ".csv")
-                with open(out_text,"w") as out_file:
-                    out_file.write("Max,Mean\n")
-                    for o in out:
-                        out_file.write(str(np.max(o))+","+str(np.mean(o))+"\n")
+
+            if type_proj == "max":
+                out.append(np.max(stack, axis=0))
+            elif type_proj == "mean":
+                out.append(np.mean(stack, axis=0))
+            elif type_proj == "median":
+                out.append(np.median(stack, axis=0))
+            elif type_proj == "sum":
+                out.append(np.sum(stack, axis=0) / stack.shape[0])
+
+        if save_stack:
+            if len(names):
+                extra = names[stage-1]
+            else:
+                extra = "stage_" + str(stage)
+            out = np.array(out, dtype='uint16')
+
+            imsave(os.path.join(path,"projections",extra + "_wave_" + str(wl) +"_"+ type_proj +".tif"), out)
+
+
+
+            continue
+            out_text = os.path.join(path, "projections", extra + "_wave_" + str(wl) + "_" + type_proj + ".csv")
+            with open(out_text,"w") as out_file:
+                out_file.write("Max,Mean\n")
+                for o in out:
+                    out_file.write(str(np.max(o))+","+str(np.mean(o))+"\n")
 
 def process(p,proj):
 
@@ -125,8 +125,12 @@ def process(p,proj):
     dir = os.path.join(p, "projections")
     if not os.path.isdir(dir):
         os.mkdir(dir)
+    size = np.max(microsc_info, 0)
 
-    make_projection(microsc_info, microsc_files, p, type_proj=proj, names=names, nd_name=nd_name[:-3])
+    # for stage in range(1, size[1] + 1):
+    #     make_projection(stage,microsc_info, microsc_files, p, type_proj=proj, names=names, nd_name=nd_name[:-3])
+
+    Parallel(n_jobs=6, verbose=1)(delayed(make_projection)(stage,microsc_info, microsc_files, p, type_proj=proj, names=names, nd_name=nd_name[:-3]) for stage in range(1, size[1] + 1))
 
 
 

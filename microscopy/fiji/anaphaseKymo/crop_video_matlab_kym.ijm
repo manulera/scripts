@@ -15,6 +15,8 @@ function kymo_name(dir)
 }
 
 ima = getTitle();
+// Move to the first frame, which is the only that has the set metadata.
+Stack.setFrame(1);
 dir = getMetadata("original_path")+"kymos_matlab"+File.separator;
 //dir = File.directory+"kymos_matlab"+File.separator;
 if (!File.isDirectory(dir))

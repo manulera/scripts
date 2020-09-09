@@ -17,7 +17,7 @@ run("Bleach Correction", "correction=[Exponential Fit]");
 
 run("Select None");
 saveAs("Tiff", dir+File.separator+movie_name+"_bleach_corrected.tif");
-bleach_corrected = getTitle()
+bleach_corrected = getTitle();
 
 
 run("Duplicate...", "duplicate");

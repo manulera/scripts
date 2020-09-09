@@ -3,10 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="0875381a-525a-4a71-9477-f2b2923200b2" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/microscopy/fiji/crop_video_matlab_kym.ijm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/microscopy/fiji/cut_video_matlab_kym.ijm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/microscopy/fiji/anaphaseKymo/all_rois.ijm" beforeDir="false" afterPath="$PROJECT_DIR$/microscopy/fiji/anaphaseKymo/all_rois.ijm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/microscopy/fiji/anaphaseKymo/crop_video_matlab_kym.ijm" beforeDir="false" afterPath="$PROJECT_DIR$/microscopy/fiji/anaphaseKymo/crop_video_matlab_kym.ijm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/microscopy/fiji/kymo_justopen.ijm" beforeDir="false" afterPath="$PROJECT_DIR$/microscopy/fiji/kymo_justopen.ijm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/microscopy/fiji/make_mask_matlab_kym.ijm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/microscopy/fiji/make_figures/add_overlay.ijm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/microscopy/fiji/make_figures/make_merg.ijm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/microscopy/fiji/open_projections.ijm" beforeDir="false" afterPath="$PROJECT_DIR$/microscopy/fiji/open_projections.ijm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/microscopy/python/make_projections.py" beforeDir="false" afterPath="$PROJECT_DIR$/microscopy/python/make_projections.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
