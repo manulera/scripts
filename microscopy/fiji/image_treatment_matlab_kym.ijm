@@ -1,6 +1,6 @@
 dir = getDirectory("image");
 movie = getTitle();
-
+do_treatment=true;
 
 //dotIndex = indexOf(movie, "."); 
 //movie_name = substring(movie, 0, dotIndex-1); 
@@ -13,10 +13,14 @@ run("Create Selection");
 close();
 selectWindow(movie);
 run("Restore Selection");
-run("Bleach Correction", "correction=[Exponential Fit]");
+if (do_treatment)
+{
+	run("Bleach Correction", "correction=[Exponential Fit]");
+}
 
 run("Select None");
 saveAs("Tiff", dir+File.separator+movie_name+"_bleach_corrected.tif");
+
 bleach_corrected = getTitle();
 
 
@@ -29,6 +33,9 @@ selectWindow(bleach_corrected);
 run("Gaussian Blur...", "sigma=1 stack");
 saveAs("Tiff", dir+File.separator+movie_name+"_bleach_corrected_gauss1.tif");
 
-close();
-close();
+if (do_treatment)
+{
+	close();
+	close();
+}
 close("Log");

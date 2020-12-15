@@ -58,7 +58,7 @@ run("Trainable Weka Segmentation");
 // wait for the plugin to load
 wait(3000);
 
-selectWindow("Trainable Weka Segmentation v3.2.28");
+selectWindow("Trainable Weka Segmentation v3.2.34");
 call("trainableSegmentation.Weka_Segmentation.loadClassifier", class_path);
 call("trainableSegmentation.Weka_Segmentation.getProbability");
 

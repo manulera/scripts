@@ -38,9 +38,9 @@ def process(arg):
 
     path = os.path.dirname(os.path.realpath(arg))
 
-    # if os.path.isdir(os.path.join(path,"extra")):
-    #     print "  Skipped, because it already has an extra directory"
-    #     return
+    if os.path.isdir(os.path.join(path,"extra")):
+        print "  Skipped, because it already has an extra directory"
+        return
 
     make_projections([path],'max')
 

@@ -21,7 +21,7 @@ scalebar_len = 3;
 scalebar_text = false;
 
 
-run("Duplicate...", "duplicate frames=38-56");
+run("Duplicate...", "duplicate frames=32-50");
 runMacro("/Users/Manu/scripts/microscopy/fiji/make_figures/make_merge.ijm");
 runMacro("/Users/Manu/scripts/microscopy/fiji/make_figures/make_vertical_montage.ijm");
 addScaleBar(space_res,scalebar_len,scalebar_text);
